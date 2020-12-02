@@ -44,20 +44,12 @@ class _Int_PostDetailsState extends State<Int_PostDetails> {
             ),
             SizedBox(height: 25),
             Text(
-              "Posted on ",
+              "Posted on " + widget.snapshot['posted_on'],
               style: TextStyle(
                   color: Colors.grey[700],
                   fontSize: 25,
                   fontWeight: FontWeight.w400),
             ),
-            SizedBox(width: 15),
-            Text(
-              widget.snapshot['posted_on'],
-              style: TextStyle(
-                  color: Colors.grey[700],
-                  fontSize: 25,
-                  fontWeight: FontWeight.w400),
-            )
           ],
         ),
       )),

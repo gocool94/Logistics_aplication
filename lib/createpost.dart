@@ -65,6 +65,8 @@ class _createpostState extends State<createpost> {
 
     UploadTask uploadTask = ref.putFile(image);
 
+    Fluttertoast.showToast(msg: "Wait for image to upload");
+
     uploadTask.events.listen((event) {
       setState(() {
         _isloading = true;
@@ -82,7 +84,8 @@ class _createpostState extends State<createpost> {
     print('URL Is $url');
 
     imageurl = url;
-    Fluttertoast.showToast(msg: imageurl);
+    Fluttertoast.showToast(
+        msg: "Image Uploaded Successfully. Now you can Submit!!!");
     return url;
   }
 
@@ -168,10 +171,11 @@ class _createpostState extends State<createpost> {
                           .setData({
                         "image": imageurl,
                         "posted_by": user.email,
-                        "posted_on": DateTime.now()
+                        "posted_on": DateTime.now().toString()
                       });
 
                       Fluttertoast.showToast(msg: " Posted Successfully!!");
+                      Navigator.pop(context);
                       return;
                     }
                   },
@@ -180,12 +184,12 @@ class _createpostState extends State<createpost> {
                   padding: const EdgeInsets.all(0.0),
                   child: Ink(
                     decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [
-                          Colors.blue[500],
-                          Colors.blue[200],
-                        ],
-                      ),
+                      // gradient: LinearGradient(
+                      //   colors: [
+                      //     Colors.blue[500],
+                      //     Colors.blue[200],
+                      //   ],
+                      // ),
                       borderRadius: BorderRadius.all(Radius.circular(80.0)),
                     ),
                     child: Container(

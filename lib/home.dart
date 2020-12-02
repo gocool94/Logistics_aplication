@@ -1,6 +1,7 @@
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 //import 'package:fl_fire_auth/Admin/createpost.dart';
 
 import 'Authentication/auth_helper.dart';
@@ -141,9 +142,14 @@ class _HomeState extends State<Home> {
             ListTile(
               title: Text("Logout"),
               leading: Icon(EvaIcons.logOutOutline),
-             onTap: () {
-                Navigator.of(context).pop();
-                AuthHelper.logOut();
+              onTap: () => {
+                Fluttertoast.showToast(
+                  msg: "Logged Out Successfully",
+                  timeInSecForIosWeb: 3,
+                ),
+                Navigator.pop(context),
+                Navigator.pop(context),
+                AuthHelper.logOut(),
               },
             ),
           ],

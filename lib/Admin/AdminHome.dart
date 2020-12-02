@@ -1,13 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fl_fire_auth/Admin/usersposts.dart';
-
+import 'InternationalNews/officialdata.dart';
 import '../Authentication/auth_helper.dart';
 //import 'dart:html';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:carousel_pro/carousel_pro.dart';
-import 'InternationalNews/AdminInternationalAllNews.dart';
 
 import 'dart:async';
 import './users.dart';
@@ -48,12 +47,12 @@ class _AdminHomeState extends State<AdminHome> {
           "Logistics(Super Admin)",
           style: TextStyle(color: Colors.black),
         ),
-        backgroundColor: Colors.orange,
+        backgroundColor: Colors.white,
         iconTheme: new IconThemeData(color: Colors.black),
       ),
       drawer: new Drawer(
         child: Container(
-          color: Color(0xffffd280),
+          color: Colors.white,
           child: new ListView(
             children: <Widget>[
               new UserAccountsDrawerHeader(
@@ -62,7 +61,7 @@ class _AdminHomeState extends State<AdminHome> {
                   style: TextStyle(color: Colors.black),
                 ),
                 accountEmail: null,
-                decoration: new BoxDecoration(color: Colors.orange),
+                decoration: new BoxDecoration(color: Colors.orange[200]),
               ),
               new ListTile(
                 title: new Text(
@@ -247,7 +246,7 @@ class _AdminHomeState extends State<AdminHome> {
           ),
         ),
       ),
-      backgroundColor: Colors.orange,
+      backgroundColor: Colors.white,
       body: new ListView(
         children: <Widget>[
           //First Container Start
