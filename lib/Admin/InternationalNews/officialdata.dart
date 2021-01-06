@@ -36,11 +36,12 @@ class _InternationalNewsState extends State<InternationalNews> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.white,
         title: new Text(
           "Official data",
           style: TextStyle(color: Colors.grey[800]),
         ),
+        backgroundColor: Colors.blue[500],
+        iconTheme: new IconThemeData(color: Colors.white),
       ),
       body: FutureBuilder(
         future: getAllPost(),

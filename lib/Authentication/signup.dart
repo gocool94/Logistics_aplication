@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import '../FadeAnimation.dart';
 import 'social.dart';
 import '../Home.dart';
+import 'login.dart';
 
 bool isHiddenPassword = true;
 
@@ -203,6 +204,9 @@ class _SignupPageState extends State<SignupPage> {
                                     msg: "Signup successful");
                                 print("Signup successful");
                                 Navigator.pop(context);
+                                Navigator.of(context).push(
+                                    new MaterialPageRoute(
+                                        builder: (context) => LoginPage()));
                               }
                             } catch (e) {
                               print(e);
@@ -213,12 +217,12 @@ class _SignupPageState extends State<SignupPage> {
                           padding: const EdgeInsets.all(0.0),
                           child: Ink(
                             decoration: BoxDecoration(
-                              // gradient: LinearGradient(
-                              //   colors: [
-                              //     Color.fromRGBO(40, 25, 7, 1),
-                              //     Colors.brown,
-                              //   ],
-                              // ),
+                              gradient: LinearGradient(
+                                colors: [
+                                  Colors.orange[500],
+                                  Colors.orange[200],
+                                ],
+                              ),
                               borderRadius:
                                   BorderRadius.all(Radius.circular(80.0)),
                             ),
@@ -250,7 +254,9 @@ class _SignupPageState extends State<SignupPage> {
                         press: () async {
                           try {
                             await AuthHelper.signInWithGoogle();
-                            Navigator.pop(context);
+                            // Navigator.pop(context);
+                            Navigator.of(context).push(new MaterialPageRoute(
+                                builder: (context) => LoginPage()));
                           } catch (e) {
                             print(e);
                           }

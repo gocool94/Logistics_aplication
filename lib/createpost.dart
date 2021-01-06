@@ -15,9 +15,17 @@ class createpost extends StatefulWidget {
   _createpostState createState() => _createpostState();
 }
 
+enum AppState {
+  free,
+  picked,
+  cropped,
+}
+
 class _createpostState extends State<createpost> {
-  TextEditingController _titleController;
-  TextEditingController _postcontentController;
+  AppState state;
+  File imageFile;
+
+  TextEditingController _postdescriptionController;
 
   String _categoryVal;
   String _postType;
@@ -32,31 +40,9 @@ class _createpostState extends State<createpost> {
   @override
   void initState() {
     super.initState();
-    _titleController = TextEditingController(text: "");
-    _postcontentController = TextEditingController(text: "");
-  }
+    state = AppState.free;
 
-  getImage(source) async {
-    var selectedimage = await ImagePicker.pickImage(
-      source: source,
-    );
-    File croppedFile =
-        await ImageCropper.cropImage(sourcePath: selectedimage.path);
-
-    setState(() {
-      image = croppedFile;
-      filename = basename(image.path);
-    });
-  }
-
-  Future _getImage() async {
-    var selectedImage =
-        await ImagePicker.pickImage(source: ImageSource.gallery);
-
-    setState(() {
-      image = selectedImage;
-      filename = basename(image.path);
-    });
+    _postdescriptionController = TextEditingController(text: "");
   }
 
   Future<String> uploadImage() async {
@@ -107,21 +93,32 @@ class _createpostState extends State<createpost> {
     );
   }
 
+  Widget _contenttextfield() {
+    return TextField(
+      controller: _postdescriptionController,
+      decoration: InputDecoration(
+          labelText: "Description",
+          hintText: "Type description here....",
+          border: OutlineInputBorder()),
+      maxLines: 8,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: new AppBar(
           title: new Text(
             "Upload Document",
-            style: TextStyle(color: Colors.grey[800]),
+            style: TextStyle(color: Colors.white),
           ),
-          backgroundColor: Colors.white,
-          iconTheme: new IconThemeData(color: Colors.grey[800]),
+          backgroundColor: Colors.blue[500],
+          //iconTheme: new IconThemeData(color: Colors.white),
         ),
         body: ListView(
           padding: EdgeInsets.all(8),
           children: <Widget>[
-            SizedBox(height: 40.0),
+            SizedBox(height: 10.0),
             // _contenttextfield(),
             Container(
               padding: EdgeInsets.all(20.0),
@@ -132,12 +129,12 @@ class _createpostState extends State<createpost> {
                     child: Row(
                       children: [
                         FlatButton.icon(
-                            onPressed: () => getImage(ImageSource.camera),
+                            onPressed: () => _pickImageCamera(),
                             padding: EdgeInsets.only(right: 100),
                             icon: Icon(Icons.camera),
                             label: Text('Camera')),
                         FlatButton.icon(
-                            onPressed: () => getImage(ImageSource.gallery),
+                            onPressed: () => _pickImageGallery(),
                             icon: Icon(Icons.photo_library),
                             label: Text('Gallery')),
                       ],
@@ -146,7 +143,8 @@ class _createpostState extends State<createpost> {
                 ],
               ),
             ),
-            SizedBox(height: 10.0),
+            _contenttextfield(),
+            SizedBox(height: 15.0),
             Container(
               height: 50,
               child: Center(
@@ -159,9 +157,12 @@ class _createpostState extends State<createpost> {
                     if (imageurl == null) {
                       Fluttertoast.showToast(msg: " Please Upload Image!!");
                       return;
+                    }
+                    if (_postdescriptionController.text.isEmpty) {
+                      Fluttertoast.showToast(
+                          msg: " Please enter description!!");
+                      return;
                     } else {
-                      print(_postcontentController.text);
-
                       // ignore: deprecated_member_use
                       Firestore.instance
                           .collection("userdata")
@@ -170,6 +171,7 @@ class _createpostState extends State<createpost> {
                           // ignore: deprecated_member_use
                           .setData({
                         "image": imageurl,
+                        "description": _postdescriptionController.text,
                         "posted_by": user.email,
                         "posted_on": DateTime.now().toString()
                       });
@@ -184,12 +186,12 @@ class _createpostState extends State<createpost> {
                   padding: const EdgeInsets.all(0.0),
                   child: Ink(
                     decoration: BoxDecoration(
-                      // gradient: LinearGradient(
-                      //   colors: [
-                      //     Colors.blue[500],
-                      //     Colors.blue[200],
-                      //   ],
-                      // ),
+                      gradient: LinearGradient(
+                        colors: [
+                          Colors.blue[500],
+                          Colors.blue[200],
+                        ],
+                      ),
                       borderRadius: BorderRadius.all(Radius.circular(80.0)),
                     ),
                     child: Container(
@@ -209,5 +211,90 @@ class _createpostState extends State<createpost> {
             ),
           ],
         ));
+  }
+
+  Future<Null> _pickImageGallery() async {
+    imageFile = await ImagePicker.pickImage(source: ImageSource.gallery);
+    File croppedFile = await ImageCropper.cropImage(
+        sourcePath: imageFile.path,
+        aspectRatioPresets: Platform.isAndroid
+            ? [
+                CropAspectRatioPreset.square,
+                CropAspectRatioPreset.ratio3x2,
+                CropAspectRatioPreset.ratio4x3,
+                CropAspectRatioPreset.ratio5x3,
+                CropAspectRatioPreset.ratio5x4,
+                CropAspectRatioPreset.ratio7x5,
+                CropAspectRatioPreset.ratio16x9
+              ]
+            : [
+                CropAspectRatioPreset.original,
+                CropAspectRatioPreset.square,
+                CropAspectRatioPreset.ratio3x2,
+                CropAspectRatioPreset.ratio4x3,
+                CropAspectRatioPreset.ratio5x3,
+                CropAspectRatioPreset.ratio5x4,
+                CropAspectRatioPreset.ratio7x5,
+                CropAspectRatioPreset.ratio16x9
+              ],
+        androidUiSettings: AndroidUiSettings(
+            toolbarTitle: 'Cropper',
+            toolbarColor: Colors.blue[500],
+            toolbarWidgetColor: Colors.white,
+            initAspectRatio: CropAspectRatioPreset.original,
+            lockAspectRatio: false),
+        iosUiSettings: IOSUiSettings(
+          title: 'Cropper',
+        ));
+    if (croppedFile != null) {
+      setState(() {
+        image = croppedFile;
+        filename = basename(image.path);
+        state = AppState.cropped;
+      });
+    }
+  }
+
+  Future<Null> _pickImageCamera() async {
+    imageFile = await ImagePicker.pickImage(source: ImageSource.camera);
+    File croppedFile = await ImageCropper.cropImage(
+        sourcePath: imageFile.path,
+        aspectRatioPresets: Platform.isAndroid
+            ? [
+                CropAspectRatioPreset.square,
+                CropAspectRatioPreset.ratio3x2,
+                CropAspectRatioPreset.original,
+                CropAspectRatioPreset.ratio4x3,
+                CropAspectRatioPreset.ratio5x3,
+                CropAspectRatioPreset.ratio5x4,
+                CropAspectRatioPreset.ratio7x5,
+                CropAspectRatioPreset.ratio16x9
+              ]
+            : [
+                CropAspectRatioPreset.original,
+                CropAspectRatioPreset.square,
+                CropAspectRatioPreset.ratio3x2,
+                CropAspectRatioPreset.ratio4x3,
+                CropAspectRatioPreset.ratio5x3,
+                CropAspectRatioPreset.ratio5x4,
+                CropAspectRatioPreset.ratio7x5,
+                CropAspectRatioPreset.ratio16x9
+              ],
+        androidUiSettings: AndroidUiSettings(
+            toolbarTitle: 'Cropper',
+            toolbarColor: Colors.blue[500],
+            toolbarWidgetColor: Colors.white,
+            initAspectRatio: CropAspectRatioPreset.original,
+            lockAspectRatio: false),
+        iosUiSettings: IOSUiSettings(
+          title: 'Cropper',
+        ));
+    if (croppedFile != null) {
+      setState(() {
+        image = croppedFile;
+        filename = basename(image.path);
+        state = AppState.cropped;
+      });
+    }
   }
 }

@@ -25,8 +25,8 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Logistics',
       theme: ThemeData(
-        primarySwatch: Colors.orange,
-        // primaryColor: Colors.blue,
+        // primarySwatch: Colors.orange,
+        primaryColor: Colors.blue,
         fontFamily: "poppins",
       ),
       home: MainScreen(),
